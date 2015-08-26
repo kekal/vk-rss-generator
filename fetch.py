@@ -2,7 +2,7 @@ import requests
 from lxml import html
 
 
-def make_html_obj(link):
+def make_html_obj_from(link):
     import urlparse
 
     response = requests.get(link)
@@ -26,7 +26,7 @@ def generate_xml(links, images, domain, title, path):
 
     for i in xrange(len(links)):
         output += '    <entry>\n'
-        output += '      <id>tag:' + domain + ',2005:Post/' + images[i].split('/')[-1] + '</id>\n'
+        output += '      <id>tag:' + domain + ',2005:Post/' + images[i].split('/')[-1].split('.')[-2] + '</id>\n'
         output += '      <published>' + now.isoformat() + '</published>\n'
         output += '      <updated>' + now.isoformat() + '</updated>\n'
         output += '      <link rel="alternate" type="text/html" href="' + links[i] + '"/>\n'
@@ -48,22 +48,31 @@ def generate_xml(links, images, domain, title, path):
         source.write(output.encode('utf-8'))
 
 
-main_link = 'http://vk.com/photos215773245'
-# main_link = 'http://m.vk.com/photos279216051?lang="ru"'
+main_link = 'http://m.vk.com/photos279216051'
 
-
-res = make_html_obj(main_link)
-dom = res[0]
+res = make_html_obj_from(main_link)
+dom = res[0][:-1]
 full_html = res[1]
 
-caption = full_html.xpath('//title/text()')[0]
+caption = full_html.xpath('//title/text()')[0].split('|')[0].strip()
+
+blocks = full_html.xpath('//div[@class="photo_row"]')
+
+urls = []
+photos = []
+
+for block in blocks:
+    l = block.xpath('./a/@href')
+    p = block.xpath('./a/img/@src')
+    if len(l) == 0 or len(p) == 0:
+        print 'wrong block ', block.xpath('./text()')
+        continue
+    urls.append(dom + l[0].replace('?all=1', ''))
+    photos.append(p[0])
 
 urls = full_html.xpath('//div[@class="photo_row"]/a/@href')
 urls = map(lambda x: dom + x.replace('?all=1', ''), urls)
 
 photos = full_html.xpath('//img[@class="photo_row_img"]/@src')
-
-# urls = [urlparse.urljoin(response.url, url) for url in links]
-# photos = [urlparse.urljoin(response.url, url) for url in images]
 
 generate_xml(urls, photos, dom, caption, 'result.atom')
