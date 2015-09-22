@@ -21,19 +21,19 @@ def parse_atom(xml_file):
 
         if child.tag != 'entry':
             continue
+
         entry = child
-        published = link = image = desc = author = author_link = content = ''
+        published = link = image_link = desc = author = author_link = img_hash = content = ''
         for grandchild in entry:
             if grandchild.tag == 'id':
-                img_hash = grandchild.text.split('/')
-                img_hash = img_hash[-1]
+                img_hash = grandchild.text.split('/')[-1]
             if grandchild.tag == 'published':
                 published = grandchild.text
             if grandchild.tag == 'link':
                 if grandchild.attrib['rel'] == 'alternate':
                     link = grandchild.attrib['href']
                 else:
-                    image = grandchild.attrib['href']
+                    image_link = grandchild.attrib['href']
             if grandchild.tag == 'title':
                 desc = grandchild.tail
             if grandchild.tag == 'author':
@@ -42,8 +42,9 @@ def parse_atom(xml_file):
             if grandchild.tag == 'content':
                 content = grandchild.text
 
+        # page_link='', description='', author_name='', author_link='', image_link='', time='', photo_hash='', content=''
         params_dict['messages'].append(
-            PostParamsContainer(link, desc, author, author_link, image, published, img_hash, content))
+            PostParamsContainer(link, desc, author, author_link, image_link, published, img_hash, content))
 
     return params_dict
 

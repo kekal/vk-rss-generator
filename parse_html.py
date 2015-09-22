@@ -37,43 +37,53 @@ def analise_photo_page(link):
 
     photo_page_object = make_html_obj_from_link(link, 'mobile')
 
-    author = photo_page_object.xpath('//div[@class="mv_details"]/dl[2]/dd/a/text()')
-    if not author:
-        author = ''
-    else:
-        author = author[0]
+    author_name = photo_page_object.xpath('//div[@class="mv_details"]/dl[2]/dd/a/text()')
+    author_name = '' if author_name else author_name[0]
 
     author_link = photo_page_object.xpath('//div[@class="mv_details"]/dl[2]/dd/a/@href')
-    if not author_link:
-        author_link = ''
+    author_link = '' if author_link else author_link[0]
+
+    # title = photo_page_object.xpath('//div[@class="mv_description"]/text()')
+    # if title:
+    #     temp = ''
+    #     for tit in title:
+    #         temp += tit
+    #     title = temp
+    # else:
+    #     title = ''
+
+    description = photo_page_object.xpath('//div[@class="mv_description"]/node()')
+    title = ''
+    if description:
+        content = []
+        for desc in description:
+            if not isinstance(desc, (str, basestring, unicode)):
+                content.append(tostring(desc))
+            else:
+                content.append(desc)
+                title += desc
+        content = ' '.join(content)
+        content = html.escape(content)
     else:
-        author_link = author_link[0]
+        content = html.escape(photo_page_object.xpath('//div[@class="pv_summary"]/text()')[0])
+        title = content
 
-    descript = photo_page_object.xpath('//div[@class="mv_description"]/node()')
 
-    title = []
-
-    for desc in descript:
-        if not isinstance(desc, (str, basestring)):
-            title.append(tostring(desc))
-        else:
-            title.append(desc)
-    title = ' '.join(title)
-    title = html.escape(title)
-
-    image = photo_page_object.xpath('//li/a[@target="_blank"]/@href')
-    if not image:
+    image_link = photo_page_object.xpath('//li/a[@target="_blank"]/@href')
+    if not image_link:
         print link, ' has not been parsed correctly'
-        print image, '\n'
-        with open(link.split('/')[-1] + '.html', 'w') as source:
+        print image_link, '\n'
+        with open(link.split('/')[-1] + 'NotCorrectlyParsedPage.html', 'w') as source:
             source.write(tostring(photo_page_object))
-        image = ''
+        image_link = ''
+        photo_hash = ''
     else:
-        image = image[0]
-        photo_hash = image.split('.')[-2].split('/')[-1]
+        image_link = image_link[0]
+        photo_hash = image_link.split('.')[-2].split('/')[-1]
 
     from PostParamsContainer import PostParamsContainer
-    return PostParamsContainer(link, title, author, author_link, image, photo_hash=photo_hash)
+    # page_link='', description='', author_name='', author_link='', image_link='', time='', photo_hash='', content=''
+    return PostParamsContainer(link, title, author_name, author_link, image_link, photo_hash=photo_hash, content=content)
 
 
 def retrieve_links_from_thumbnail_page(blocks):

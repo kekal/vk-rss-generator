@@ -11,10 +11,11 @@ file_names, sources, feed_size, login, password = import_sources('sources.txt')
 for j in xrange(0, len(sources)):
     print '\nTrying to parse album ' + sources[j] + '\n'
 
-    if os.path.isfile(file_names[j]):
-        feed_parameters_db = parse_atom(file_names[j])
-    else:
-        feed_parameters_db = {'messages': []}
+    feed_parameters_db = {'messages': []} if not os.path.isfile(file_names[j]) else parse_atom(file_names[j])
+    # if os.path.isfile(file_names[j]):
+    #     feed_parameters_db = parse_atom(file_names[j])
+    # else:
+    #     feed_parameters_db = {'messages': []}
 
     feed_parameters_db['main_link'] = sources[j]
 
@@ -30,15 +31,10 @@ for j in xrange(0, len(sources)):
     for i in xrange(0, len(links)):
         mess = analise_photo_page(links[i])
         if next((x for x in feed_parameters_db['messages'] if x.photo_hash == mess.photo_hash), None) is not None:
-            # feed_parameters_db['links'].remove(link)
             continue
 
-        # messages.append(mess)
         feed_parameters_db['messages'].insert(i, mess)
         time.sleep(1)
-
-    # messages.extend(feed_parameters_db['messages'])
-    # feed_parameters_db['messages'] = messages
 
     AG = AtomGenerator(feed_parameters_db, file_names[j])
     AG.generate_xml()

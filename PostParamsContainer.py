@@ -1,10 +1,11 @@
 class PostParamsContainer(object):
-    def __init__(self, link='', desc='', author='', author_link='', image_link='', time='', photo_hash='', content=''):
+    def __init__(self, page_link='', description='', author_name='', author_link='', image_link='', time='',
+                 photo_hash='', content=''):
         self._image_link = image_link
         self._author_link = author_link
-        self._author = author
-        self._desc = desc
-        self._link = link
+        self._author_name = author_name
+        self._description = description
+        self._page_link = page_link
         self._time = time
         self._photo_hash = photo_hash
         self._content = content
@@ -34,40 +35,40 @@ class PostParamsContainer(object):
         del self._author_link
 
     @property
-    def author(self):
-        return self._author
+    def author_name(self):
+        return self._author_name
 
-    @author.setter
-    def author(self, value):
-        self._author = value
+    @author_name.setter
+    def author_name(self, value):
+        self._author_name = value
 
-    @author.deleter
-    def author(self):
-        del self._author
-
-    @property
-    def desc(self):
-        return self._desc
-
-    @desc.setter
-    def desc(self, value):
-        self._desc = value
-
-    @desc.deleter
-    def desc(self):
-        del self._desc
+    @author_name.deleter
+    def author_name(self):
+        del self._author_name
 
     @property
-    def link(self):
-        return self._link
+    def description(self):
+        return self._description
 
-    @link.setter
-    def link(self, value):
-        self._link = value
+    @description.setter
+    def description(self, value):
+        self._description = value
 
-    @link.deleter
-    def link(self):
-        del self._link
+    @description.deleter
+    def description(self):
+        del self._description
+
+    @property
+    def page_link(self):
+        return self._page_link
+
+    @page_link.setter
+    def page_link(self, value):
+        self._page_link = value
+
+    @page_link.deleter
+    def page_link(self):
+        del self._page_link
 
     @property
     def time(self):
