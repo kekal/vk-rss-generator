@@ -1,7 +1,8 @@
 class PostParamsContainer(object):
-    def __init__(self, page_link='', description='', author_name='', author_link='', image_link='', time='',
+    def __init__(self, page_link='', description='', author_name='', author_link='', image_link='', album_name='', time='',
                  photo_hash='', content=''):
         self._image_link = image_link
+        self._album_name = album_name
         self._author_link = author_link
         self._author_name = author_name
         self._description = description
@@ -21,6 +22,18 @@ class PostParamsContainer(object):
     @image_link.deleter
     def image_link(self):
         del self._image_link
+
+    @property
+    def album_name(self):
+        return self._album_name
+
+    @album_name.setter
+    def album_name(self, value):
+        self._album_name = value
+
+    @album_name.deleter
+    def album_name(self):
+        del self._album_name
 
     @property
     def author_link(self):

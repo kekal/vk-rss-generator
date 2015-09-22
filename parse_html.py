@@ -38,10 +38,13 @@ def analise_photo_page(link):
     photo_page_object = make_html_obj_from_link(link, 'mobile')
 
     author_name = photo_page_object.xpath('//div[@class="mv_details"]/dl[2]/dd/a/text()')
-    author_name = '' if author_name else author_name[0]
+    author_name = '' if not author_name else author_name[0]
 
     author_link = photo_page_object.xpath('//div[@class="mv_details"]/dl[2]/dd/a/@href')
-    author_link = '' if author_link else author_link[0]
+    author_link = '' if not author_link else author_link[0]
+
+    album_name = photo_page_object.xpath('//div[@class="mv_details"]/dl[1]/dd/a/node()')
+    album_name = '' if not album_name else album_name[0]
 
     description = photo_page_object.xpath('//div[@class="mv_description"]/node()')
     title = ''
@@ -57,7 +60,7 @@ def analise_photo_page(link):
         content = html.escape(' '.join(content))
         title = html.escape(title)
     else:
-        content = html.escape(photo_page_object.xpath('//div[@class="pv_summary"]/text()')[0])
+        content = 'Album: ' + album_name + '. ' + html.escape(photo_page_object.xpath('//div[@class="pv_summary"]/text()')[0])
         title = content
 
     image_link = photo_page_object.xpath('//li/a[@target="_blank"]/@href')
@@ -74,7 +77,7 @@ def analise_photo_page(link):
 
     from PostParamsContainer import PostParamsContainer
     # page_link='', description='', author_name='', author_link='', image_link='', time='', photo_hash='', content=''
-    return PostParamsContainer(link, title, author_name, author_link, image_link, photo_hash=photo_hash, content=content)
+    return PostParamsContainer(link, title, author_name, author_link, image_link,  photo_hash=photo_hash, content=content)
 
 
 def retrieve_links_from_thumbnail_page(blocks):
