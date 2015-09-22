@@ -8,7 +8,7 @@ def make_html_obj_from_link(link, mode='desktop'):
 
     if mode == 'mobile':
         try:
-            response = requests.get(link, headers={'User-Agent': 'blahblah iPhone'})
+            response = requests.get(link, headers={'User-Agent': 'blahblah iPhone', 'Accept-Language': 'ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3'})
         except requests.exceptions.ConnectionError:
             print 'link ' + link + ' unreachable'
             return
@@ -16,7 +16,7 @@ def make_html_obj_from_link(link, mode='desktop'):
         body = make_links_absolute(response.content, domain)
     else:
         try:
-            response = requests.get(link)
+            response = requests.get(link, headers={'Accept-Language': 'ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3'})
         except requests.exceptions.ConnectionError:
             print 'link ' + link + ' unreachable'
             return
@@ -43,15 +43,6 @@ def analise_photo_page(link):
     author_link = photo_page_object.xpath('//div[@class="mv_details"]/dl[2]/dd/a/@href')
     author_link = '' if author_link else author_link[0]
 
-    # title = photo_page_object.xpath('//div[@class="mv_description"]/text()')
-    # if title:
-    #     temp = ''
-    #     for tit in title:
-    #         temp += tit
-    #     title = temp
-    # else:
-    #     title = ''
-
     description = photo_page_object.xpath('//div[@class="mv_description"]/node()')
     title = ''
     if description:
@@ -62,12 +53,12 @@ def analise_photo_page(link):
             else:
                 content.append(desc)
                 title += desc
-        content = ' '.join(content)
-        content = html.escape(content)
+
+        content = html.escape(' '.join(content))
+        title = html.escape(title)
     else:
         content = html.escape(photo_page_object.xpath('//div[@class="pv_summary"]/text()')[0])
         title = content
-
 
     image_link = photo_page_object.xpath('//li/a[@target="_blank"]/@href')
     if not image_link:

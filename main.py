@@ -12,10 +12,6 @@ for j in xrange(0, len(sources)):
     print '\nTrying to parse album ' + sources[j] + '\n'
 
     feed_parameters_db = {'messages': []} if not os.path.isfile(file_names[j]) else parse_atom(file_names[j])
-    # if os.path.isfile(file_names[j]):
-    #     feed_parameters_db = parse_atom(file_names[j])
-    # else:
-    #     feed_parameters_db = {'messages': []}
 
     feed_parameters_db['main_link'] = sources[j]
 
