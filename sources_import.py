@@ -4,7 +4,7 @@ def import_sources(path):
     if not os.path.isfile(path):
         raise IOError('file does NOT exist.')
 
-    feed_size = 5
+    feed_size = 20
     login = password = ''
     file_names = []
     links = []
