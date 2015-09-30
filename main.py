@@ -5,11 +5,13 @@ from atom_read import parse_atom
 from atom_write import AtomGenerator
 from parse_html import make_html_obj_from_link, retrieve_links_from_thumbnail_page, analise_photo_page
 from sources_import import import_sources
+import global_settings
+
 
 file_names, sources, feed_size, login, password = import_sources('sources.txt')
 
 for j in xrange(0, len(sources)):
-    print '\nTrying to parse album ' + sources[j] + '\n'
+    global_settings.logging.info('           Trying to parse album ' + sources[j] + '\n')
 
     feed_parameters_db = {'messages': []} if not os.path.isfile(file_names[j]) else parse_atom(file_names[j])
 
@@ -34,3 +36,5 @@ for j in xrange(0, len(sources)):
 
     AG = AtomGenerator(feed_parameters_db, file_names[j])
     AG.generate_xml()
+
+    global_settings.logging.info('\n\n')

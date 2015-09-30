@@ -1,4 +1,6 @@
+import logging
 from pydoc import html
+import global_settings
 
 
 def make_html_obj_from_link(link, mode='desktop'):
@@ -33,7 +35,7 @@ def analise_photo_page(link):
 
     link = link.replace('http://vk', 'http://m.vk')
 
-    print 'parsing page ' + link
+    logging.info('parsing page ' + link)
 
     photo_page_object = make_html_obj_from_link(link, 'mobile')
 
