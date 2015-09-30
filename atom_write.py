@@ -1,9 +1,11 @@
 # coding=utf-8
+import os
+
 class AtomGenerator(object):
 
     def __init__(self, params_dict=None, path='result6.atom'):
         self.params_dict = params_dict
-        self.path = path
+        self.path = os.path.join(os.path.dirname(__file__), path)
 
     def generate_xml(self):
         if self.params_dict is None:
