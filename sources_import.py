@@ -1,6 +1,7 @@
+import os
+
+
 def import_sources(path):
-    import os
-    
     path = os.path.join(os.path.dirname(__file__), path)
     if not os.path.isfile(path):
         raise IOError('file \"' + path + '\" does NOT exist.')
